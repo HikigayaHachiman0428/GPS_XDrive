@@ -282,11 +282,6 @@ public:
       shootTarget = predictedTarget;
     float tar = lookAtCalc(predictedTarget, 0);
     aimPID.setTarget(processTarget(tar));
-    // aimPID.setLim(fmin(driveV*0.7,70));
-    // if (abbs(processTarget(tar) - GYRO) >= 30)
-    //   aimPID.setLim(90);
-    if (abbs(processTarget(tar) - GYRO <= 10))
-      aimPID.setLim(70);
     aimPID.update(GYRO, Gyro.gyroRate(zaxis, dps) / 100);
     // if (driveV < 20 && aimPID.getOutput() < 10)
     //   rotateV = 0;

@@ -104,8 +104,11 @@ void PIDGyroTurn(float target, float tolerance = 1, float dTolerance = 1)
 
 void intake(float v)
 {
-  moveMotor(itk, v);
-  moveMotor(ind, v);
+  if (v < 0 || !intakeControlOverriden)
+  {
+    moveMotor(itk, v);
+    moveMotor(ind, v);
+  }
 }
 
 void OLDPIDGyroTurn(float target, float tolerance = 1, float dTolerance = 1)

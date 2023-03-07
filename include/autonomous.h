@@ -189,16 +189,7 @@ void leftPath()
   // discorrect = true;
   // delay(500);
   // shoot(V2(132, -132));
-  lookAt(V2(120, -120), 0, 2, 1);
-  moveMotor(ind, -100);
-  float timerOffset = TIMER;
-  while (!triggerReady)
-    delay(10);
-  while ((TIMER - timerOffset) < 200)
-    delay(10);
-  trigger = 1;
-  while (trigger)
-    delay(10);
+  shoot(V2(120, -120));
   autoTrigger = false;
   cout << TIMER - timerStart << endl;
   while (1)

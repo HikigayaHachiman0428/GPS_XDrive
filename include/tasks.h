@@ -34,6 +34,47 @@ float getDistance(Eigen::Vector2f target)
   return predis;
 }
 
+int discNumControl()
+{
+  float disc1 = 10; // when there is one disc
+  float disc2 = 20; // when there are two disc
+  float disc3 = 30; // when there are three disc
+  float stableLidDis = 0;
+  float preLidDis = 0;
+  bool preState = false;
+  float timerOffset = 0;
+  while (1)
+  {
+    if (preLidDis == lidDis)
+      stableLidDis = lidDis;
+    if (stableLidDis <= disc1)
+      discNum = 0;
+    else if (stableLidDis >= disc1 && stableLidDis <= disc2)
+      discNum = 1;
+    else if (stableLidDis >= disc2 && stableLidDis <= disc3)
+      discNum = 2;
+    else
+      discNum = 3;
+    preLidDis = lidDis;
+    if (discNum == 3)
+    {
+      intakeControlOverriden = true;
+      intake(-100);
+      if (!preState)
+        timerOffset = TIMER;
+      if (TIMER - timerOffset >= 250)
+        preOpenLid = true;
+    }
+    else
+    {
+      intakeControlOverriden = false;
+    }
+    preState = intakeControlOverriden;
+    delay(10);
+  }
+  return 1;
+}
+
 //  100, 640
 //  120, 656
 //  140, 670
@@ -49,9 +90,10 @@ float getDistance(Eigen::Vector2f target)
 float encoderOutset = 0;
 float getEncoder(float x)
 {
-  return 0.00656134 * x * x - 0.638719 * x + 635.464 + 40;
-  // return 900;
-  // return -1.1750346185979898e-14*x*x*x*x*x*x*x*x*x+2.0073670492520317e-11*x*x*x*x*x*x*x*x-1.5048549381392062e-8*x*x*x*x*x*x*x+0.0000064941540199576705*x*x*x*x*x*x-0.001776948977230754*x*x*x*x*x+0.3195324230343142*x*x*x*x-37.74156618212961*x*x*x+2822.211247582093*x*x-121182.51731063976*x+2276237.465690938;;
+  float ret;
+  ret = 0.00656134 * x * x - 0.638719 * x + 635.464 + 40;
+  ret *= discNum / 3;
+  ret = fmin(ret, 1200);
 }
 
 int disCalculator()
@@ -95,39 +137,25 @@ int disControl()
   return 1;
 }
 
-int triggerControl()
+void hit()
 {
-  while (1)
-  {
-    if (trigger)
-    {
-      bool inAutoAdjust = autoTrigger;
-      // while (!triggerReady)
-      //   delay(10);
-      adjustTrigger = 0;
-      if (inAutoAdjust)
-        autoTrigger = 0;
-      moveTrigger(-5);
-      delay(50);
-      releaseTrigger();
-      delay(250);
-      // if (triggerDisTarget > 800)
-      //   delay(200);
-      lockTrigger();
-      delay(100);
-      resetTriggerEncoder();
-      encoderOutset = 0;
-      adjustTrigger = 1;
-      if (inAutoAdjust)
-        autoTrigger = 1;
-      trigger = 0;
-      // moveMotor(ind, 10);
-      // delay(50);
-      // moveMotor(ind, 0);
-    }
-    delay(10);
-  }
-  return 1;
+  bool inAutoAdjust = autoTrigger;
+  adjustTrigger = 0;
+  if (inAutoAdjust)
+    autoTrigger = 0;
+  moveTrigger(-5);
+  delay(50);
+  releaseTrigger();
+  delay(250);
+  // if (triggerDisTarget > 800)
+  //   delay(200);
+  lockTrigger();
+  delay(100);
+  resetTriggerEncoder();
+  encoderOutset = 0;
+  adjustTrigger = 1;
+  if (inAutoAdjust)
+    autoTrigger = 1;
 }
 
 void setShootTarget(V2 in, float outset = 0)
@@ -147,112 +175,19 @@ void shoot(Eigen::Vector2f target = shootTarget)
   if (!preOpenLid)
     while ((TIMER - timerOffset) < 250)
       delay(10);
-  trigger = 1;
-  while (trigger)
-    delay(10);
+  hit();
 }
 
 void shootWithoutAiming()
 {
   intake(-100);
   float timerOffset = TIMER;
-  while (!triggerReady)
-    delay(10);
+  // while (!triggerReady)
+  //   delay(10);
   if (!preOpenLid)
     while ((TIMER - timerOffset) < 250)
       delay(10);
-  trigger = 1;
-  while (trigger)
-    delay(10);
-}
-
-float changeAim() { locked = !locked; }
-float aimSpeed;
-float getAimSpeed() { return aimSpeed; }
-int Aimer()
-{
-  // 282cm 2600
-  // 150cm 2200
-  while (1)
-  {
-    aimSpeed = 0;
-    if (lockMode)
-    {
-      // cout<<CoR.transpose()<<endl;
-      autoTrigger = true;
-      // globalspeed = CoR - lastCoR;
-      float lastglobaldis = 0, lockIntegral = 0, lastlockerror = 0, lockedcount = 0, error = 0;
-      while (lockMode)
-      {
-
-        float predis = sqrt((scoringHighGoal[0] - CoR[0]) * (scoringHighGoal[0] - CoR[0]) + (scoringHighGoal[1] - CoR[1]) * (scoringHighGoal[1] - CoR[1]));
-        Eigen::Vector2f predicttarget = scoringHighGoal - globalSpeed * (16.3 + predis * 0.1);
-        // predicttarget << scoringHighGoal[0]-globalspeed[0]*(8.3+predis/10), scoringHighGoal[1]-globalspeed[1]*(8+predis/8.2);
-        float dis = sqrt((predicttarget[0] - CoR[0]) * (predicttarget[0] - CoR[0]) + (predicttarget[1] - CoR[1]) * (predicttarget[1] - CoR[1]));
-        // cout << dis << endl;
-        // triggerDisTarget = getEncoder(predis);
-        float globaldisspeed = dis - lastglobaldis;
-        float target = lookAtCalc(predicttarget, 0);
-        // cout << target << endl;
-        error = processTarget(target) - GYRO;
-        // cout << error << endl;
-        float rotatepower = 0;
-
-        // cout << CoR.transpose() << "   "<< globalRot<< endl;
-        // cout << predicttarget.transpose()<<"  "<<target<<"  "<<error <<"   "<<dis<<endl;
-
-        // 300 900
-        // 200 710 1.35
-        // y= 1.357x + 440
-
-        // if (globalspeed.norm()<0.5) if (lastlockerror*error <= 0) lockIntegral = 0;
-        float v = Gyro.gyroRate(zaxis, dps) / 100;
-        // float v = error - lastlockerror;
-
-        float kp = 4;
-        if (globalSpeed.norm() > 1)
-        {
-          kp = kp * sqrt(sqrt(globalSpeed.norm()));
-        }
-
-        float ki = 0.05;
-        float kd = 30;
-        if (globalSpeed.norm() > 0.5)
-        {
-          kd = 30;
-          ki = 0.05;
-        }
-
-        // if (globalspeed.norm()<0.2&&fabs(error)<0.3) {kp=0;kd=0;ki=0;}
-        if (fabs(error) < 10)
-        {
-          lockIntegral += error;
-        }
-        if (error * lastlockerror <= 0)
-        {
-          lockIntegral = 0;
-        }
-
-        lastlockerror = error;
-        lastglobaldis = dis;
-
-        if (fabs(error) <= 1)
-          lockedcount++;
-        else
-          lockedcount = 0;
-        if (lockedcount >= 3)
-          locked = true;
-        else
-          locked = false;
-
-        // cout << error << "  "<<v <<endl;
-        aimSpeed = abs(kp * error + ki * lockIntegral + kd * v) > 70 ? -sign(kp * error + ki * lockIntegral * kd * v) * 70 : -(kp * error + ki * lockIntegral + kd * v);
-        // cout << aimSpeed << endl;
-        delay(10);
-      }
-    }
-    delay(10);
-  }
+  hit();
 }
 
 int ensureExpansion()

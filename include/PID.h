@@ -43,28 +43,6 @@ public:
     }
     void update(float input)
     {
-        // float dt = 0.01;
-        // float timeused = 0;
-        // float kp = 3;          // 3.0 , 3.95
-        // float ki = 4;          // 28.9 , 28.6
-        // float kd = 6.5;        // 29.9 , 29.9
-        // float imin = 3.0 / ki; // ji fen fan wei
-        // float istart = 40;     // start to integral
-        // float dtol = 0.5;
-        // float errortolerance = tolerance; // 2.5zd
-        // float lim = 100;
-        // target = processTarget(target);
-        // float error = target - GYRO;
-        // float lasterror;
-        // float v = 0;
-        // float i = 0;
-        // bool arrived, firstOver = true;
-        // float timetol = abbs(error) < 20 ? 700 : abbs(error) * 24;
-        // float pow, slow = 0;
-        // lasterror = error;
-        // arrived = error == 0;
-        // while (!arrived)
-        // {
         float timeused = TIMER - timerOffset;
         error = target - input;
         float v = (error - lasterror);
@@ -101,28 +79,6 @@ public:
     }
     void update(float input, float velocity)
     {
-        // float dt = 0.01;
-        // float timeused = 0;
-        // float kp = 3;          // 3.0 , 3.95
-        // float ki = 4;          // 28.9 , 28.6
-        // float kd = 6.5;        // 29.9 , 29.9
-        // float imin = 3.0 / ki; // ji fen fan wei
-        // float istart = 40;     // start to integral
-        // float dtol = 0.5;
-        // float errortolerance = tolerance; // 2.5zd
-        // float lim = 100;
-        // target = processTarget(target);
-        // float error = target - GYRO;
-        // float lasterror;
-        // float v = 0;
-        // float i = 0;
-        // bool arrived, firstOver = true;
-        // float timetol = abbs(error) < 20 ? 700 : abbs(error) * 24;
-        // float pow, slow = 0;
-        // lasterror = error;
-        // arrived = error == 0;
-        // while (!arrived)
-        // {
         float timeused = TIMER - timerOffset;
         error = target - input;
         // float v = (error - lasterror) / delayTime;
@@ -161,28 +117,6 @@ public:
     }
     void update(V2 input)
     {
-        // float dt = 0.01;
-        // float timeused = 0;
-        // float kp = 3;          // 3.0 , 3.95
-        // float ki = 4;          // 28.9 , 28.6
-        // float kd = 6.5;        // 29.9 , 29.9
-        // float imin = 3.0 / ki; // ji fen fan wei
-        // float istart = 40;     // start to integral
-        // float dtol = 0.5;
-        // float errortolerance = tolerance; // 2.5zd
-        // float lim = 100;
-        // target = processTarget(target);
-        // float error = target - GYRO;
-        // float lasterror;
-        // float v = 0;
-        // float i = 0;
-        // bool arrived, firstOver = true;
-        // float timetol = abbs(error) < 20 ? 700 : abbs(error) * 24;
-        // float pow, slow = 0;
-        // lasterror = error;
-        // arrived = error == 0;
-        // while (!arrived)
-        // {
         float timeused = TIMER - timerOffset;
         error = (vectorTarget - input).norm();
         float v = (error - lasterror);

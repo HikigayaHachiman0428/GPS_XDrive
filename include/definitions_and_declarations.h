@@ -52,11 +52,9 @@ float abbs(float x)
 #define GYRO Gyro.rotation(deg)
 #define V2 Eigen::Vector2f
 #define V4 Eigen::Vector4f
-
+#define lidDis 10
 static int ch_state = 1;
-static bool manuel = 1;
-static int autoRoutine = 3 ;
-static bool trigger = 0;
+static int autoRoutine = 0;
 static bool lockMode = 0;
 static bool locked = 0;
 static bool adjustTrigger = 1;
@@ -68,4 +66,6 @@ static bool autoTrigger = true;
 static bool inOneMinute = false;
 static bool preOpenLid = false;
 static float lidStart = 0;
+static int discNum = 0;
+static bool intakeControlOverriden = false;
 #endif

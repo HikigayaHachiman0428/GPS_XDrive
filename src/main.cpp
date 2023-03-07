@@ -15,7 +15,7 @@ aimer AIMER;
 void vexcodeInit()
 {
   // Controller1.Screen.clearScreen();
-  Controller1.Screen.setCursor(3, 1);
+  // Controller1.Screen.setCursor(3, 1);
   // cPrint("/*---------------*/");
   // cPrint("/*  CALIBRATING  */");
   // cPrint("/*  DO NOT MOVE  */");
@@ -30,10 +30,7 @@ void vexcodeInit()
   LB.resetPosition();
   RF.resetPosition();
   RB.resetPosition();
-  // releaseTrigger();
-  // delay(500);
   lockTrigger();
-  // delay(500);
   triggerLeft.resetPosition();
   triggerRight.resetPosition();
   liftIntake(false);
@@ -157,7 +154,7 @@ void usercontrol()
   bool lockMode = false, ThirdMode = false, adjustTrigger = true, autoTrigger = false, trigger = false, firstRumble = true, preOpenLid = false;
   float userStartTime = TIMER;
   resetTriggerEncoder();
-  triggerDisTarget = 500;
+  // triggerDisTarget = 500;
   liftIntake(false);
   while (1)
   {
@@ -290,14 +287,12 @@ void usercontrol()
 int main()
 {
   vexcodeInit();
-  // usercontrol();
+  delay(200);
   task GYROREADER(GyroReader);
   task GPSCOORDINATOR(GPScoordinator);
-  // task LOCKAIM(Aimer);
-  task TRIGGER(triggerControl);
   task DISCONTROL(disControl);
   task AUTOCAL(disCalculator);
-  // DISCONTROL.suspend();
+  task DISCNUM(discNumControl);
   delay(200);
   Competition.autonomous(Auto);
   Competition.drivercontrol(usercontrol);
