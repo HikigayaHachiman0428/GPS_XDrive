@@ -1,0 +1,18 @@
+{
+	"project": {
+		"name": "GPS_XDrive",
+		"slot": 1,
+		"description": "Empty V5 C++ Project",
+		"platform": "V5",
+		"creationDate": "Mon, 30 Jan 2023 08:51:40 GMT",
+		"language": "cpp",
+		"sdkVersion": "V5_20220726_10_00_00",
+		"cpp": {
+			"includePath": []
+		}
+	},
+	"extension": {
+		"version": "0.3.0",
+		"json": 1
+	}
+}
