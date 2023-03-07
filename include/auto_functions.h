@@ -247,7 +247,7 @@ void openLid()
 void closeLid()
 {
   moveMotor(ind, 100);
-  delay(200);
+  delay(50);
   moveMotor(ind, 0);
 }
 

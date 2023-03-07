@@ -170,9 +170,12 @@ float lookAtCalc(Eigen::Vector2f target, float bodyAngle)
   return (theta / M_PI * 180) + bodyAngle;
 }
 
+# define globalRot getRadianOnUnitCircle(CoR)
+
 // target是目标的坐标向量，bodyAngle是想要面对target的部位和目前机器人的面向的偏转角度
 void lookAt(Eigen::Vector2f target, float bodyAngle = 0, float tolerance = 2, float dtolerance = 1)
 {
+  // PIDGyroTurn(lookAtCalc(target, bodyAngle), tolerance, dtolerance);
   OLDPIDGyroTurn(lookAtCalc(target, bodyAngle), tolerance, dtolerance);
 }
 
@@ -435,7 +438,7 @@ void xDriveMove(float finalx, float finaly, float finalGyro, float vratio = 1, m
     movePID.setCoefficient(10.8, 0.12, 2.6);
     movePID.setErrorTolerance(axisTolerance);
     movePID.setIstart(10);
-    movePID.setdTolerance(2);
+    movePID.setdTolerance(1e9);
     rotatePID.setTarget(finalGyro);
     rotatePID.setCoefficient(9.5, 0.1, 12.5);
     rotatePID.setErrorTolerance(GyroTolerance);

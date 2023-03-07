@@ -145,7 +145,7 @@ void shoot(Eigen::Vector2f target = shootTarget)
   while (!triggerReady)
     delay(10);
   if (!preOpenLid)
-    while ((TIMER - timerOffset) < 200)
+    while ((TIMER - timerOffset) < 250)
       delay(10);
   trigger = 1;
   while (trigger)
@@ -156,11 +156,11 @@ void shootWithoutAiming()
 {
   intake(-100);
   float timerOffset = TIMER;
-  if (!preOpenLid)
-    while ((TIMER - timerOffset) < 300)
-      delay(10);
   while (!triggerReady)
     delay(10);
+  if (!preOpenLid)
+    while ((TIMER - timerOffset) < 250)
+      delay(10);
   trigger = 1;
   while (trigger)
     delay(10);

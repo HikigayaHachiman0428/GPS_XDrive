@@ -305,7 +305,6 @@ int main()
   while (1)
   {
     /* Brain Print */
-    // cout << autoTrigger << " "<<ch_state<<endl;
     Brain.Screen.printAt(10, 120, "Trigger:%.2f", triggerLeft.position(deg));
     Brain.Screen.printAt(10, 140, "Trigger Target:%.2f", triggerDisTarget);
     Brain.Screen.printAt(10, 160, "Gyro:%.2f", GYRO);
